@@ -5,7 +5,8 @@ function Contact(first, last) {
   this.address = [];
 }
 
-function Address (street, city, state, zip) {
+function Address (type, street, city, state, zip) {
+  this.type = type;
   this.street = street;
   this.city = city;
   this.state = state;
@@ -31,7 +32,8 @@ var clearAddress = function() {
 $(document).ready(function() {
 
 var contacts = [];
-var index = 0;
+var contactIndex = 0;
+var addressIndex = 0;
 
   $("form#new-contact").submit(function(event) {
     event.preventDefault();
@@ -41,7 +43,6 @@ var index = 0;
 
     var newContact = new Contact(inputtedFirstName, inputtedLastName);
     contacts.push(newContact);
-    console.log(contacts);
 
     $("ul#contacts").append("<li><span class='contact'>" + newContact.fullName() + "</span></li>");
 
@@ -50,24 +51,33 @@ var index = 0;
 
     $(".contact").last().click(function() {
     $("#show-contact").show();
+    $("#addAddress").show();
     $("#show-contact h2").text(newContact.firstName);
     $(".first-name").text(newContact.firstName);
     $(".last-name").text(newContact.lastName);
-    index = contacts.indexOf(newContact);
+    //$(".address").text(newContact.address);
+    contactIndex = contacts.indexOf(newContact);
+    //console.log(contactIndex);
     });
   });
   $("#newAddress").submit(function() {
     event.preventDefault();
+    var inputType = $("#addressType").val();
     var inputAddress = $("#street").val();
     var inputCity = $("#city").val();
     var inputState = $("#state").val();
     var inputZip = $("#zip").val();
 
-    var newAddress = new Address (inputAddress, inputCity, inputState, inputZip);
-    contacts[index].address.push(newAddress);
-    clearAddress();
-    $(".address").text(contacts[index].address);
+    var newAddress = new Address (inputType, inputAddress, inputCity, inputState, inputZip);
 
-    $("#address").append("<li>" + newAddress.fullAddress() + "</li>");
+    contacts[contactIndex].address.push(newAddress);
+    addressIndex = contacts[contactIndex].address.indexOf(newAddress);
+    console.log(newAddress.type);
+
+    clearAddress();
+
+    $("#address").append("<li>" + contacts[contactIndex].address[addressIndex].type + ": " + contacts[contactIndex].address[addressIndex].fullAddress() + "</li>");
+    // $("#address").append("<li>" + contacts[index].address.fullAddress() + "</li>");
+
   })
 });
